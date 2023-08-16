@@ -1,8 +1,8 @@
 ---
 galaxy_info:
   namespace: dimaliv
-  role_name: docker_project
-  description: Deploy docker compose or docker swarm project.
+  role_name: ssl_certificate
+  description: Copy SSL certificate to host.
   author: Livshits Dmitry
   license: "license MIT"
   min_ansible_version: "2.7"
@@ -11,15 +11,9 @@ galaxy_info:
       versions:
         - bullseye
         - buster
-    - name: OracleLinux
-      versions:
-        - "7.9"
-        - "8.0"
   galaxy_tags:
-    - docker
-    - docker-compose
-    - deploy
-    - docker-swarm
+    - ssl
+    - certificate
 
 dependencies: []
 
