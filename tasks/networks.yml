@@ -1,0 +1,49 @@
+- name: create external networks
+  community.docker.docker_network:
+    name: "{{ docker_project_external_networks_loop }}"
+  loop: "{{ role_docker_external_networks }}"
+  when: >
+    role_docker_external_networks is defined and
+    role_docker_external_networks | length > 0 and
+    not role_docker_project_swarm_mode
+  loop_control:
+    loop_var: docker_project_external_networks_loop
+
+- name: create internal networks
+  community.docker.docker_network:
+    name: "{{ docker_project_internal_networks_loop }}"
+    internal: true
+  loop: "{{ role_docker_internal_networks }}"
+  when: >
+    role_docker_internal_networks is defined and
+    role_docker_internal_networks | length > 0 and
+    not role_docker_project_swarm_mode
+  loop_control:
+    loop_var: docker_project_internal_networks_loop
+
+- name: create swarm external networks
+  community.docker.docker_network:
+    name: "{{ docker_project_swarm_external_networks_loop }}"
+    scope: "swarm"
+    driver: "overlay"
+  loop: "{{ role_docker_external_networks }}"
+  when: >
+    role_docker_external_networks is defined and
+    role_docker_external_networks | length > 0 and
+    role_docker_project_swarm_mode | bool
+  loop_control:
+    loop_var: docker_project_swarm_external_networks_loop
+
+- name: create swarm internal networks
+  community.docker.docker_network:
+    name: "{{ docker_project_swarm_internal_networks_loop }}"
+    scope: "swarm"
+    driver: "overlay"
+    internal: true
+  loop: "{{ role_docker_internal_networks }}"
+  when: >
+    role_docker_internal_networks is defined and
+    role_docker_internal_networks | length > 0 and
+    role_docker_project_swarm_mode | bool
+  loop_control:
+    loop_var: docker_project_swarm_internal_networks_loop

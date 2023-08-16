@@ -1,0 +1,5 @@
+- name: stack remove
+  community.docker.docker_stack:
+    name: "{{ stack.name }}"
+    state: absent
+  when: role_docker_project_swarm_mode | bool

@@ -1,0 +1,26 @@
+- name: Docker | Prepare
+  ansible.builtin.import_tasks: prepare.yml
+  tags: prepare
+
+- name: Docker | Networks
+  ansible.builtin.import_tasks: networks.yml
+  tags: networks
+
+- name: Docker | Deploy
+  ansible.builtin.import_tasks: deploy.yml
+  tags: deploy
+
+- name: Docker | Up
+  ansible.builtin.import_tasks: up.yml
+  tags: up
+  when: "'up' in ansible_run_tags and not role_docker_project_swarm_mode | bool" # == false
+
+- name: Docker | Down
+  ansible.builtin.import_tasks: down.yml
+  tags: down
+  when: "'down' in ansible_run_tags and not role_docker_project_swarm_mode | bool" # == false
+
+- name: Docker | Remove
+  ansible.builtin.import_tasks: remove.yml
+  tags: remove
+  when: "'remove' in ansible_run_tags and role_docker_project_swarm_mode | bool" # == true

@@ -1,0 +1,8 @@
+- name: docker-compose down
+  community.docker.docker_compose:
+    project_name: "{{ role_project_name }}"
+    project_src: "{{ role_project_dest }}"
+    files: "{{ role_docker_project_project_compose_files }}"
+    state: absent
+    build: "{{ role_docker_project_project_compose_build }}"
+  when: role_docker_project_project_swarm_mode | bool

@@ -1,0 +1,44 @@
+role_docker_project_swarm_mode: false
+
+role_docker_project_name: "{{ undef(hint='You must specify project name') }}"
+role_docker_project_src: ""
+role_docker_project_dest: "{{ undef(hint='You must specify project destination dir') }}"
+
+role_docker_project_files_owner: "root"
+role_docker_project_files_group: "root"
+role_docker_project_files_mode: "0640"
+
+role_docker_project_dir_owner: "root"
+role_docker_project_dir_group: "root"
+role_docker_project_dir_mode: "0750"
+
+role_docker_project_registry_url: ""
+role_docker_project_registry_username: ""
+role_docker_project_registry_password: ""
+role_docker_project_registry_reauthorize: true
+role_docker_project_registries: []
+
+role_docker_project_env_variables: ""
+role_docker_project_compose_env_file_name: ".env"
+role_docker_project_compose_remove_orphans: true
+role_docker_project_compose_build: false
+role_docker_project_compose_pull: true
+role_docker_project_compose_recreate: "smart"
+role_docker_project_compose_files: []
+role_docker_project_compose_definition: ''
+
+role_docker_project_stack_prune: true
+role_docker_project_stack_resolve_image: "changed"
+role_docker_project_stack_with_registry_auth: true
+role_docker_project_stack_files: []
+
+role_docker_project_prune_after_deploy: true
+role_docker_project_prune_containers: true
+role_docker_project_prune_images: true
+role_docker_project_prune_images_filters_dangling: false
+role_docker_project_prune_networks: true
+role_docker_project_prune_builder_cache: true
+role_docker_project_prune_volumes: false
+
+role_docker_external_networks: []
+role_docker_internal_networks: []

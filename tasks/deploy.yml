@@ -1,0 +1,41 @@
+- name: deploy docker-compose from files
+  community.docker.docker_compose:
+    project_name: "{{ role_docker_project_name }}"
+    project_src: "{{ role_docker_project_dest }}"
+    remove_orphans: "{{ role_docker_project_compose_remove_orphans }}"
+    build: "{{ role_docker_project_compose_build }}"
+    pull: "{{ role_docker_project_compose_pull }}"
+    recreate: "{{ role_docker_project_compose_recreate }}"
+    files: "{{ role_docker_project_compose_files }}"
+    env_file: "{{ role_docker_project_dest }}/{{ role_docker_project_compose_env_file_name }}"
+  when: >
+    role_docker_project_compose_files is defined and role_docker_project_compose_files | length > 0 and
+    (role_docker_project_compose_definition is not defined or role_docker_project_compose_definition | length == 0) and
+    not role_docker_project_swarm_mode | bool
+  notify: "prune docker artefacts"
+
+- name: deploy docker-compose from definition
+  community.docker.docker_compose:
+    project_name: "{{ role_docker_project_name }}"
+    project_src: "{{ role_docker_project_dest }}"
+    remove_orphans: "{{ role_docker_project_compose_remove_orphans }}"
+    build: "{{ role_docker_project_compose_build }}"
+    pull: "{{ role_docker_project_compose_pull }}"
+    recreate: "{{ role_docker_project_compose_recreate }}"
+    definition: "{{ role_docker_project_compose_definition }}"
+  when: >
+    role_docker_project_compose_definition is defined and role_docker_project_compose_definition | length > 0 and
+    (role_docker_project_compose_files is not defined or role_docker_project_compose_files | length == 0) and
+    not role_docker_project_swarm_mode | bool
+  notify: "prune docker artefacts"
+
+- name: deploy swarm stack
+  community.docker.docker_stack:
+    state: present
+    name: "{{ role_docker_project_name }}"
+    prune: "{{ role_docker_project_stack_prune }}"
+    resolve_image: "{{ role_docker_project_stack_resolve_image }}"
+    with_registry_auth: "{{ role_docker_project_stack_with_registry_auth }}"
+    compose: "{{ role_docker_project_stack }}"
+  when: role_docker_project_swarm_mode | bool
+  notify: "prune docker artefacts"

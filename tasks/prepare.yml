@@ -1,0 +1,55 @@
+- name: log into private registry
+  community.docker.docker_login:
+    registry_url: "{{ role_docker_project_registry_url }}"
+    username: "{{ role_docker_project_registry_username }}"
+    password: "{{ role_docker_project_registry_password }}"
+    reauthorize: "{{ role_docker_project_registry_reauthorize }}"
+  when: >
+    (role_docker_project_registry_url is defined and role_docker_project_registry_url | length > 0) or
+    (role_docker_project_registry_username is defined and role_docker_project_registry_username | length > 0 and
+    role_docker_project_registry_password is defined and role_docker_project_registry_password | length > 0)
+  changed_when: false
+
+- name: login into private registries
+  community.docker.docker_login:
+    registry_url: "{{ docker_project_registry_loop.url }}"
+    username: "{{ docker_project_registry_loop.username }}"
+    password: "{{ docker_project_registry_loop.password }}"
+    reauthorize: "{{ docker_project_registry_loop.reauthorize | default('no') }}"
+  when: role_docker_project_registries is defined and role_docker_project_registries | length > 0
+  loop: "{{ role_docker_project_registries }}"
+  loop_control:
+    loop_var: docker_project_registry_loop
+  changed_when: false
+
+- name: ensures project dest directory exists
+  ansible.builtin.file:
+    path: "{{ role_docker_project_dest }}"
+    state: directory
+    owner: "{{ role_docker_project_dir_owner }}"
+    group: "{{ role_docker_project_dir_group }}"
+    mode: "{{ role_docker_project_dir_mode }}"
+
+- name: copy docker compose files
+  ansible.builtin.copy:
+    src: "{{ role_docker_project_src }}/{{ docker_project_compose_files_loop }}"
+    dest: "{{ role_docker_project_dest }}/{{ docker_project_compose_files_loop }}"
+    owner: "{{ role_docker_project_files_owner }}"
+    group: "{{ role_docker_project_files_group }}"
+    mode: "{{ role_docker_project_files_mode }}"
+  loop: "{{ role_docker_project_compose_files }}"
+  loop_control:
+    loop_var: docker_project_compose_files_loop
+  when: >
+    role_docker_project_src is defined and role_docker_project_src | length > 0 and
+    role_docker_project_dest is defined and role_docker_project_dest | length > 0 and
+    role_docker_project_compose_files is defined and role_docker_project_compose_files | length > 0
+
+- name: generate and copy .env file
+  ansible.builtin.template:
+    src: ".env.j2"
+    dest: "{{ role_docker_project_dest }}/{{ role_docker_project_compose_env_file_name }}"
+    owner: "{{ role_docker_project_files_owner }}"
+    group: "{{ role_docker_project_files_group }}"
+    mode: "{{ role_docker_project_files_mode }}"
+  when: role_docker_project_env_variables is defined and role_docker_project_env_variables | length > 0

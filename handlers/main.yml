@@ -1,0 +1,11 @@
+- name: prune docker artefacts
+  community.docker.docker_prune:
+    containers: "{{ role_docker_project_prune_containers }}"
+    images: "{{ role_docker_project_prune_images }}"
+    images_filters:
+      dangling: "{{ role_docker_project_prune_images_filters_dangling }}"
+    networks: "{{ role_docker_project_prune_networks }}"
+    volumes: "{{ role_docker_project_prune_volumes }}"
+    builder_cache: "{{ role_docker_project_prune_builder_cache }}"
+  when: role_docker_project_prune_after_deploy | bool
+  listen: "prune docker artefacts"
